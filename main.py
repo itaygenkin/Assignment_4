@@ -3,7 +3,7 @@ import os
 import importlib
 import atexit
 import sys
-import Repository
+import Repo
 
 
 def main():
@@ -11,9 +11,10 @@ def main():
     orders = sys.argv[2]
     global output
     output = sys.argv[3]
-    connection = Repository(sys.argv[4])
+    connection = Repo(sys.argv[4])
     connection.create_tables()
     #TODO: read the orders
+    connection.close()
 
 
 if __name__ == '__main__':

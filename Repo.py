@@ -4,7 +4,7 @@ import importlib
 import atexit
 
 
-class Repository:
+class Repo:
     def __init__(self, db_location):
         self.connections = sqlite3.connect(db_location)
 
