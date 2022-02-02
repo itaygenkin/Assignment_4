@@ -3,31 +3,24 @@ import os
 import importlib
 import atexit
 
+import Repository
 
 if __name__ == '__main__':
     print('PyCharm')
 
 def main():
-    connections = sqlite3.connect('myDB.db')
+    connection = Repository()
+    connection.create_tables()
 
-    connections.execute("""
-    CREATE TABLE suppliers (
-        id INTEGER PRIMARY KEY,
-        name STRING NOT NULL
-    )""")
+def order(connection, location, topping):
 
-    connections.execute("""
-    CREATE TABLE hats (
-        id INTEGER PRIMARY KEY,
-        topping STRING NOT NULL,
-    supplier INTEGER,
-        FOREIGN KEY(supplier) REFERENCES suppliers(id),
-        quantity INTEGER NOT NULL
-    )""")
 
-    connections.execute("""
-        CREATE TABLE orders (
-            is INTEGER PRIMARY KEY,
-            location STRING NOT NULL,
-        )hat""")
+def write_to_output_file(x):
+    file = open("output.txt", 'a')
+    file.write(x)
+    file.close()
+
+
+
+
 
