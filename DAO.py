@@ -6,7 +6,7 @@ class Hats:
                 INSERT INTO hats (id, toppings, supplier, quantity) VALUES(?, ?, ?, ?)
             """, [hat.id, hat.topping, hat.supplier, hat.quantity])
     def get_topping(self, topping):
-
+        cur = self._conn.cursor()
         return
 
 
