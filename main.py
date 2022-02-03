@@ -74,14 +74,14 @@ def main():
 
 def order(hats, location, topping, suppliers, add_n, order_table, order_id):
     hat = hats.get_topping(topping)
+    print(hat.topping)
     hats.remove_one(hat.id)
     str = hat.topping + ',' + suppliers.find_supplier(hat.supplier)[0] + ',' + location
-    ord = DTO.Order(location, hat, order_id)
+    ord = DTO.Order(location, hat.id, order_id)
     order_table.insert(ord)
     if add_n:
         str = str + '\n'
     write_to_output_file(str)
-
 
 
 def write_to_output_file(x):

@@ -19,6 +19,7 @@ class Hats:
         # cur.execute("""
         #     SELECT id FROM hats WHERE topping = ?
         #     """, [_topping])
+        print(*cur.fetchone())
         return Hat(*cur.fetchone())
 
     def remove_one(self, _id):
@@ -30,7 +31,7 @@ class Hats:
         cur.execute("""
             UPDATE hats SET quantity = (?) WHERE id = (?)
             """, [x - 1, _id])
-        if quant == 1:
+        if x == 1:
             cur.execute("""
                 DELETE FROM hats WHERE id = ?
                 """, [_id])
