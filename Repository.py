@@ -1,6 +1,4 @@
 import sqlite3
-import os
-import importlib
 
 
 class Repository:
@@ -29,3 +27,7 @@ class Repository:
             hat         INTEGER     NOT NULL,
             FOREIGN KEY(hat)        REFERENCES hats(id)
         )""")
+
+    def close_db(self):
+        self.connections.commit()
+        self.connections.close()

@@ -1,12 +1,10 @@
-import sqlite3
 import os
-import atexit
 import sys
 
 import DTO
 import Repository
 from DAO import Hats, Suppliers, Orders
-from DTO import Hat, Supplier, Order
+from DTO import Hat, Supplier
 
 
 def close_db(connections):
@@ -15,6 +13,8 @@ def close_db(connections):
 
 
 def main():
+    if os.path.exists("database.db"):
+        os.remove("database.db")
     config = sys.argv[1]
     orders = sys.argv[2]
     global output
@@ -58,23 +58,20 @@ def main():
     order_reader = open(orders, 'r')
     order_list = order_reader.readlines()
     order_table = Orders(connection)
-    for l in range(0, len(order_list)):
+    for l in range(0, len(order_list)-1):
         line = order_list[l]
         line = line[:-1]
         args = line.split(',')
-
         location = args[0]
         topping = args[1]
         add_n = (l < len(order_list) - 1)
-        #close_db(connection)
         order(hats, location, topping, suppliers, add_n, order_table, l+1)
 
-    atexit.register(close_db(connection))
+    connection.close_db()
 
 
 def order(hats, location, topping, suppliers, add_n, order_table, order_id):
     hat = hats.get_topping(topping)
-    print(hat.topping)
     hats.remove_one(hat.id)
     str = hat.topping + ',' + suppliers.find_supplier(hat.supplier)[0] + ',' + location
     ord = DTO.Order(location, hat.id, order_id)

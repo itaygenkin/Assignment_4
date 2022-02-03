@@ -16,10 +16,6 @@ class Hats:
         cur.execute("""
             SELECT id, topping, supplier, quantity FROM hats WHERE topping = ?
             """, [_topping])
-        # cur.execute("""
-        #     SELECT id FROM hats WHERE topping = ?
-        #     """, [_topping])
-        print(*cur.fetchone())
         return Hat(*cur.fetchone())
 
     def remove_one(self, _id):
@@ -48,6 +44,7 @@ class Suppliers:
             """, [supplier.id, supplier.name])
 
     def find_supplier(self, _id):
+#        print(_id)
         cur = self._conn.connections.cursor()
         cur.execute("""
             SELECT name FROM suppliers WHERE id = (?)
