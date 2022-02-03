@@ -13,7 +13,9 @@ class Supplier:
 
 
 class Order:
-    def __init__(self, id, location, hat):
+    id = 0
+    def __init__(self, location, hat):
+        id = id + 1
         self.id = id
         self.location = location
         self.hat = hat

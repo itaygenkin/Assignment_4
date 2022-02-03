@@ -1,10 +1,9 @@
 import sqlite3
 import os
 import importlib
-import atexit
 
 
-class Repo:
+class Repository:
     def __init__(self, db_location):
         self.connections = sqlite3.connect(db_location)
 
@@ -29,6 +28,3 @@ class Repo:
         );
         """)
 
-    def close(self):
-        self.connections.commit()
-        self.connections.close()
