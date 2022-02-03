@@ -44,7 +44,6 @@ class Suppliers:
             """, [supplier.id, supplier.name])
 
     def find_supplier(self, _id):
-#        print(_id)
         cur = self._conn.connections.cursor()
         cur.execute("""
             SELECT name FROM suppliers WHERE id = (?)
