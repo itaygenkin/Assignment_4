@@ -47,7 +47,8 @@ def main():
     suppliers = Suppliers(connection)
     for i in range(num_of_suppliers):
         line = config_reader.readline()
-        line = line[:-1]
+        if i < num_of_suppliers - 1:
+            line = line[:-1]
         args = line.split(',')
         supplier = Supplier(int(args[0]), args[1])
         suppliers.insert(supplier)
@@ -58,14 +59,15 @@ def main():
     order_reader = open(orders, 'r')
     order_list = order_reader.readlines()
     order_table = Orders(connection)
-    for l in range(0, len(order_list)-1):
+    for l in range(0, len(order_list)):
         line = order_list[l]
-        line = line[:-1]
+        if l < len(order_list) - 1:
+            line = line[:-1]
         args = line.split(',')
         location = args[0]
         topping = args[1]
         add_n = (l < len(order_list) - 2)
-        order(hats, location, topping, suppliers, add_n, order_table, l)
+        order(hats, location, topping, suppliers, add_n, order_table, l+1)
 
     connection.close_db()
 
