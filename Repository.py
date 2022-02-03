@@ -8,23 +8,24 @@ class Repository:
         self.connections = sqlite3.connect(db_location)
 
     def create_tables(self):
-        self.connections.execute("""
-        CREATE TABLE suppliers (
+        cur = self.connections.cursor()
+        cur.execute("""
+        CREATE TABLE IF NOT EXISTS suppliers (
             id      INTEGER     PRIMARY KEY,
             name    STRING      NOT NULL
-        );
-        CREATE TABLE hats (
+        )""")
+        cur.execute("""
+        CREATE TABLE IF NOT EXISTS hats (
             id      INTEGER     PRIMARY KEY,
             topping STRING      NOT NULL,
             supplier INTEGER    NOT NULL,
-            FOREIGN KEY(supplier) REFERENCES suppliers(id),
-            quantity INTEGER NOT NULL
-        );
-        CREATE TABLE orders (
+            quantity INTEGER    NOT NULL,
+            FOREIGN KEY(supplier) REFERENCES suppliers(id)
+        )""")
+        cur.execute("""
+        CREATE TABLE IF NOT EXISTS orders (
             id          INTEGER     PRIMARY KEY,
             location    STRING      NOT NULL,
             hat         INTEGER     NOT NULL,
             FOREIGN KEY(hat)        REFERENCES hats(id)
-        );
-        """)
-
+        )""")

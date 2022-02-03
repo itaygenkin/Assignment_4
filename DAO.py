@@ -6,27 +6,32 @@ class Hats:
         self._conn = conn
 
     def insert(self, hat):
-        self._conn.execute("""
+        cur = self._conn.connections.cursor()
+        cur.execute("""
                 INSERT INTO hats (id, topping, supplier, quantity) VALUES(?, ?, ?, ?)
             """, [hat.id, hat.topping, hat.supplier, hat.quantity])
 
     def get_topping(self, _topping):
-        cur = self._conn.cursor()
+        cur = self._conn.connections.cursor()
         cur.execute("""
             SELECT id, topping, supplier, quantity FROM hats WHERE topping = ?
             """, [_topping])
+        # cur.execute("""
+        #     SELECT id FROM hats WHERE topping = ?
+        #     """, [_topping])
         return Hat(*cur.fetchone())
 
     def remove_one(self, _id):
-        cur = self._conn.cursor()
+        cur = self._conn.connections.cursor()
         quant = cur.execute("""
             SELECT quantity FROM hats WHERE id = (?)
             """, [_id])
-        self._conn.execute("""
+        x = int(*quant.fetchone())
+        cur.execute("""
             UPDATE hats SET quantity = (?) WHERE id = (?)
-            """, [quant - 1, _id])
+            """, [x - 1, _id])
         if quant == 1:
-            self._conn.execute("""
+            cur.execute("""
                 DELETE FROM hats WHERE id = ?
                 """, [_id])
 
@@ -36,12 +41,13 @@ class Suppliers:
         self._conn = _conn
 
     def insert(self, supplier):
-        self.conn.execute("""
+        cur = self._conn.connections.cursor()
+        cur.execute("""
                 INSERT INTO suppliers(id, name) VALUES(?, ?)
             """, [supplier.id, supplier.name])
 
     def find_supplier(self, _id):
-        cur = self._conn.cursor()
+        cur = self._conn.connections.cursor()
         cur.execute("""
             SELECT name FROM suppliers WHERE id = (?)
             """, [_id])
@@ -50,8 +56,9 @@ class Suppliers:
 
 class Orders:
     def __init__(self, _conn):
-        self.conn = _conn
+        self._conn = _conn
     def insert(self, order):
-        self.conn.execute("""
+        cur = self._conn.connections.cursor()
+        cur.execute("""
                 INSERT INTO orders(id, location, hat) VALUES(?, ?, ?)
             """, [order.id, order.location, order.hat])

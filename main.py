@@ -2,14 +2,16 @@ import sqlite3
 import os
 import atexit
 import sys
+
+import DTO
 import Repository
-from DAO import Hats, Suppliers
+from DAO import Hats, Suppliers, Orders
 from DTO import Hat, Supplier, Order
 
 
 def close_db(connections):
-    connections.commit()
-    connections.close()
+    connections.connections.commit()
+    connections.connections.close()
 
 
 def main():
@@ -17,7 +19,7 @@ def main():
     orders = sys.argv[2]
     global output
     output = sys.argv[3]
-    connection = Repository(sys.argv[4])
+    connection = Repository.Repository(sys.argv[4])
     connection.create_tables()
 
     #reading the config file
@@ -25,56 +27,57 @@ def main():
     line = config_reader.readline()
 
     num_of_hats = line[0:line.find(',')]
+    num_of_hats = int(num_of_hats)
+    num_of_suppliers = line[line.find(',') + 1:]
+    num_of_suppliers = int(num_of_suppliers)
+
     hats = Hats(connection)
-    for i in num_of_hats:
+    for i in range(0, num_of_hats):
         line = config_reader.readline()
-        end = line.find(',')
-        id = line[:end]
-        start = end + 1
-        end = line.find(',', start, end)
-        topping = line[start:end]
-        start = end + 1
-        end = line.find(',', start, end)
-        supplier = line[start:end]
-        start = end + 1
-        quantity = line[start:]
+        line = line[:-1]
+        arg = line.split(',')
+
+        id = int(arg[0])
+        topping = arg[1]
+        supplier = int(arg[2])
+        quantity = int(arg[3])
         hat = Hat(id, topping, supplier, quantity)
         hats.insert(hat)
 
-    num_of_suppliers = line[line.find(',')+1:]
     suppliers = Suppliers(connection)
-    for i in num_of_suppliers:
+    for i in range(num_of_suppliers):
         line = config_reader.readline()
-        id = line[:line.find(',')]
-        name = line[line.find(',')+1:]
-        supplier = Supplier(id, name)
+        line = line[:-1]
+        args = line.split(',')
+        supplier = Supplier(int(args[0]), args[1])
         suppliers.insert(supplier)
+
     config_reader.close()
 
     # reading the orders file
     order_reader = open(orders, 'r')
     order_list = order_reader.readlines()
+    order_table = Orders(connection)
     for l in range(0, len(order_list)):
         line = order_list[l]
-        location = line[:line.find(',')]
-        topping = line[line.find(',') + 1:]
+        line = line[:-1]
+        args = line.split(',')
+
+        location = args[0]
+        topping = args[1]
         add_n = (l < len(order_list) - 1)
-        order(hats, location, topping, suppliers, add_n, orders)
+        #close_db(connection)
+        order(hats, location, topping, suppliers, add_n, order_table, l+1)
+
+    atexit.register(close_db(connection))
 
 
-    atexit.register(close_db)
-
-
-if __name__ == '__main__':
-    main()
-
-
-def order(hats, location, topping, suppliers, add_n, orders):
+def order(hats, location, topping, suppliers, add_n, order_table, order_id):
     hat = hats.get_topping(topping)
     hats.remove_one(hat.id)
-    str = hat.topping + ',' + suppliers.find_supplier(hat.supplier) + ',' + location
-    ord = Order(location, hat)
-    orders.insert(ord)
+    str = hat.topping + ',' + suppliers.find_supplier(hat.supplier)[0] + ',' + location
+    ord = DTO.Order(location, hat, order_id)
+    order_table.insert(ord)
     if add_n:
         str = str + '\n'
     write_to_output_file(str)
@@ -86,3 +89,6 @@ def write_to_output_file(x):
     file.write(x)
     file.close()
 
+
+if __name__ == '__main__':
+    main()
