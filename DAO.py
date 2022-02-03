@@ -25,6 +25,10 @@ class Hats:
         self._conn.execute("""
             UPDATE hats SET quantity = (?) WHERE id = (?)
             """, [quant - 1, _id])
+        if quant == 1:
+            self._conn.execute("""
+                DELETE FROM hats WHERE id = ?
+                """, [_id])
 
 
 class Suppliers:

@@ -13,7 +13,7 @@ class Supplier:
 
 
 class Order:
-    id = 0
+    id = 1
     def __init__(self, location, hat):
         id = id + 1
         self.id = id

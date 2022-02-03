@@ -72,6 +72,7 @@ if __name__ == '__main__':
 
 def order(hats, location, topping, suppliers, add_n, orders):
     hat = hats.get_topping(topping)
+    hats.remove_one(hat.id)
     str = hat.topping + ',' + suppliers.find_supplier(hat.supplier) + ',' + location
     ord = Order(location, hat)
     orders.insert(ord)
@@ -81,7 +82,7 @@ def order(hats, location, topping, suppliers, add_n, orders):
 
 
 
-def write_to_output_file(x): #TODO: add '\n'
+def write_to_output_file(x):
     file = open(output, 'a')
     file.write(x)
     file.close()
