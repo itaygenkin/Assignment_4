@@ -1,6 +1,5 @@
 import sqlite3
 import os
-import importlib
 import atexit
 import sys
 import Repository
