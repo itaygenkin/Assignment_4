@@ -64,8 +64,8 @@ def main():
         args = line.split(',')
         location = args[0]
         topping = args[1]
-        add_n = (l < len(order_list) - 1)
-        order(hats, location, topping, suppliers, add_n, order_table, l+1)
+        add_n = (l < len(order_list) - 2)
+        order(hats, location, topping, suppliers, add_n, order_table, l)
 
     connection.close_db()
 
